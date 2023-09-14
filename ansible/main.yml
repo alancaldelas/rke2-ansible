@@ -1,0 +1,21 @@
+- hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: Modify the config.yaml
+      lineinfile:
+        path: /etc/rancher/rke2/config.yaml 
+        regexp: 'REPLACEME'
+        line: "{{ ansible_default_ipv4.address }}"
+        owner: root
+        group: root
+        mode: '0644'
+    - name: Install RKE2 Server
+      dnf:
+        name: rke2-server
+        state: latest
+    - name: Enable RKE2 Server
+      systemd:
+        state: started
+        name: rke2-server
+        enabled: true
